@@ -17,6 +17,7 @@ resource "aws_instance" "k3s-node" {
         inline = [
             "hostnamectl set-hostname k3s-${var.node_name_suffix}",
             "export PATH=$PATH:/opt/k3s",
+            "sleep 30", # Waiting until the Kubectl API is available
             "kubectl delete node localhost",
             
         ]
@@ -28,6 +29,7 @@ data "aws_security_group" "k3s-node-sg" {
 }
 
 resource "rancher2_cluster" "k3s_single_node_cluster" {
+    count = var.api_url == "" ? 0 :1 
     name = "k3s-${var.node_name_suffix}"
     k3s_config {
     #   version = var.k3s_version
@@ -35,6 +37,7 @@ resource "rancher2_cluster" "k3s_single_node_cluster" {
 }
 
 resource "null_resource" "join_rancher" {
+    count = var.api_url == "" ? 0 :1 
     connection {
         type = "ssh"
         user = "root"
@@ -46,7 +49,7 @@ resource "null_resource" "join_rancher" {
         inline = [
             "echo Registering the K3s cluster with Rancher...",
             "export PATH=$PATH:/opt/k3s",
-            "${rancher2_cluster.k3s_single_node_cluster.cluster_registration_token[0].insecure_command}",
+            "${rancher2_cluster.k3s_single_node_cluster[count.index].cluster_registration_token[0].insecure_command}",
             "echo Cluster Registered!",
         ]
     }

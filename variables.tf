@@ -13,10 +13,12 @@ variable "aws_region" {
 variable "api_url" {
     type = string
     description = "Rancher API URL"
+    default = ""
 }
 variable "token_key" {
     type = string
     description = "Rancher API Token"
+    default = ""
 }
 
 variable "sg_name" {
