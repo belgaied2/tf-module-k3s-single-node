@@ -29,7 +29,7 @@ data "aws_security_group" "k3s-node-sg" {
 }
 
 resource "rancher2_cluster" "k3s_single_node_cluster" {
-    count = var.api_url == "" ? 0 :1 
+    count = var.register_cluster ? 1 : 0 
     name = "k3s-${var.node_name_suffix}"
     k3s_config {
     #   version = var.k3s_version
@@ -37,7 +37,7 @@ resource "rancher2_cluster" "k3s_single_node_cluster" {
 }
 
 resource "null_resource" "join_rancher" {
-    count = var.api_url == "" ? 0 :1 
+    count = var.register_cluster ? 1 : 0 
     connection {
         type = "ssh"
         user = "root"

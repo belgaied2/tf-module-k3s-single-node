@@ -18,3 +18,9 @@ variable "root_password" {
 #     description = "Version of the desired K3S cluster"
 #     default = "v1.21.10+k3s1"
 # }
+
+variable "register_cluster" {
+  type = bool
+  description = "Boolean value to decide if needed to register K3s cluster"
+  default = false
+}
