@@ -5,5 +5,5 @@ output "import_manifest" {
 
 output "cluster_id" {
     description = "Cluster ID for the imported K3S cluster"
-    value = var.api_url == "" ? "" : rancher2_cluster.k3s_single_node_cluster[0].id
+    value = var.register_cluster ? rancher2_cluster.k3s_single_node_cluster[0].id : ""
 }
